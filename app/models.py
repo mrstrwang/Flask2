@@ -24,9 +24,9 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles = {
-            'User':(permission.FOLLOW |
-                    permission.COMMENT |
-                    permssion.WRITE_ARTICLES, True),
+            'User':(Permission.FOLLOW |
+                    Permission.COMMENT |
+                    Permission.WRITE_ARTICLES, True),
             'Moderator':(Permission.FOLLOW |
                         Permission.COMMENT |
                         Permission.WRITE_ARTICLES |
@@ -91,7 +91,7 @@ class User(UserMixin,db.Model):
         return True
 
     def generate_reset_token(self, expiration=3600):
-        s = Serializer(currnet_app.config['SECRET_KEY'],expiration) 
+        s = Serializer(current_app.config['SECRET_KEY'],expiration)
         return s.dumps({'reset':self.id})
 
     def reset_password(self, token, new_password):
@@ -107,7 +107,7 @@ class User(UserMixin,db.Model):
         return True
 
     def genrate_email_change_token(self, new_email, expiration=3600):
-        s = Serializer(current_app.config['SECRET_KEY'], exporation)
+        s = Serializer(current_app.config['SECRET_KEY'], expiration)
         return s.dumps({'change_email':self.id, 'new_email':new_email})
 
     def change_email(self, token):
@@ -131,7 +131,7 @@ class User(UserMixin,db.Model):
         return self.role is not None and (self.role.permissions & permissions) == permissions
 
     def is_administrator(self):
-        return self.can(Permisssion.ADMINISTER)
+        return self.can(Permission.ADMINISTER)
 
     def __repr__(self):
         return '<User %r>' % self.username
